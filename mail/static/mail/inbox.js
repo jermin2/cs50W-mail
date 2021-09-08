@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // When you click send, send an email
   document.querySelector('form').onsubmit = () => send_email();
+
 });
 
 function compose_email() {
@@ -52,21 +53,70 @@ function send_email() {
       //show sent box
       this.load_mailbox('sent')
   });
-
-
-
   return false
 
 }
 
+function archive(email, status) {
+  // tell server we have read the email
+  fetch(`/emails/${email.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: status
+    })
+  }).then( response => {
+    if(response.status===204){
+      load_mailbox('inbox');
+    }
+    else{
+    console.log(response);
+    }
+  })
+
+  
+}
+
 function load_email(email) {
+
+  // When you archive / unarchive
+  document.querySelector('#archive').onclick = () => archive(email, true)
+  document.querySelector('#unarchive').onclick = () => archive(email, false)
+
+  // Show archive / unarchive button depending on archive state
+  if (email.archived === true) {
+    document.querySelector('#archive').style.display = 'none';
+    document.querySelector('#unarchive').style.display = 'block';
+  }
+  else {
+    document.querySelector('#archive').style.display = 'block';
+    document.querySelector('#unarchive').style.display = 'none';
+  }
 
   // Show the email view and hide the other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'block';
 
-  
+  const sender = document.querySelector('#email-sender');
+  const recipients = document.querySelector('#email-recipients');
+  const subject = document.querySelector('#email-subject');
+  const timestamp = document.querySelector('#email-timestamp');
+  const body = document.querySelector('#email-body');
+
+  sender.innerHTML = email.sender;
+  recipients.innerHTML = email.recipients;
+  subject.innerHTML = email.subject;
+  timestamp.innerHTML = email.timestamp;
+  body.innerHTML = email.body;
+
+  // tell server we have read the email
+  fetch(`/emails/${email.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  })
+
 }
 
 function load_mailbox(mailbox) {
@@ -107,6 +157,8 @@ function load_mailbox(mailbox) {
 function createEmailObject(email) {
   const e = document.createElement('tr');
   e.classList = "email";
+  e.onclick = () => load_email(email)
+
   if(email.read===true){
     e.style.background = "lightgray"
   }
