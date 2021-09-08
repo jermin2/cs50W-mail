@@ -7,3 +7,7 @@ textarea {
     padding: 3px;
     margin: 3px;
 }
+
+.heading {
+    display:inline-block;
+}

@@ -27,6 +27,21 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+
+function reply(email) {
+  // Call this to show compose screen
+  compose_email(); 
+
+  // Fill in the fields with the detail
+  document.querySelector('#compose-recipients').value = email.sender;
+  if (email.subject.startsWith('Re: ')){
+    document.querySelector('#compose-subject').value = email.subject;
+  } else {
+    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+  }
+  document.querySelector('#compose-body').value = `\n\nOn ${email.timestamp} ${email.sender} wrote: \n ${email.body}`;
+}
+
 function send_email() {
 
   console.log("send something")
@@ -72,8 +87,6 @@ function archive(email, status) {
     console.log(response);
     }
   })
-
-  
 }
 
 function load_email(email) {
@@ -82,13 +95,16 @@ function load_email(email) {
   document.querySelector('#archive').onclick = () => archive(email, true)
   document.querySelector('#unarchive').onclick = () => archive(email, false)
 
+  // Set function for reply button
+  document.querySelector('#reply').onclick = () => reply(email)
+
   // Show archive / unarchive button depending on archive state
   if (email.archived === true) {
     document.querySelector('#archive').style.display = 'none';
-    document.querySelector('#unarchive').style.display = 'block';
+    document.querySelector('#unarchive').style.display = 'inline-block';
   }
   else {
-    document.querySelector('#archive').style.display = 'block';
+    document.querySelector('#archive').style.display = 'inline-block';
     document.querySelector('#unarchive').style.display = 'none';
   }
 
@@ -107,7 +123,7 @@ function load_email(email) {
   recipients.innerHTML = email.recipients;
   subject.innerHTML = email.subject;
   timestamp.innerHTML = email.timestamp;
-  body.innerHTML = email.body;
+  body.value = email.body;
 
   // tell server we have read the email
   fetch(`/emails/${email.id}`, {
@@ -118,6 +134,7 @@ function load_email(email) {
   })
 
 }
+
 
 function load_mailbox(mailbox) {
   

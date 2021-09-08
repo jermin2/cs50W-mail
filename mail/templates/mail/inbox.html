@@ -31,14 +31,34 @@
         </form>
     </div>
 
-    <div id="email-view">
+    <div id="email-view" class="container">
         <button class="btn btn-sm btn-outline-primary" id="archive">Archive</button>
         <button class="btn btn-sm btn-outline-primary" id="unarchive">Unarchive</button>
-        <div id="email-sender"></div>
-        <div id="email-recipients"></div>
-        <div id="email-timestamp"></div>
-        <div id="email-subject"></div>
-        <div id="email-body"></div>
+        <button class="btn btn-sm btn-outline-primary" id="reply">Reply</button>
+        <hr />
+        <table class="w-100">
+            <tr>
+                <td class="text-muted">From: </td>
+                <td id="email-sender" class="heading"></td>
+            </tr>
+            <tr>
+                <td class="text-muted">To: </td>
+                <td id="email-recipients" class="heading"></td>
+            </tr>
+            <tr>
+                <td class="text-muted">Subject: </td>
+                <td id="email-subject" class="heading font-weight-bold"></td>
+            </tr>
+            <tr>
+                <td class="text-muted">Time: </td>
+                <td id="email-timestamp" class="heading"></td>
+            </tr>
+        </table>
+        <hr />
+        <div>
+            <textarea id="email-body" class="heading" style="width:100%; border-style:none; resize:none" readonly disabled></textarea>
+        </div>
+
     </div>
 {% endblock %}
 
