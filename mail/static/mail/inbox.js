@@ -162,8 +162,8 @@ function load_mailbox(mailbox) {
       for(const i in emails){
         const email = emails[i];
         
-
-        emailTable.appendChild( this.createEmailObject(email) )
+        sent = mailbox==='sent' ? true : false;
+        emailTable.appendChild( this.createEmailObject(email, sent) )
       }
 
       emailView.appendChild(emailTable);
@@ -171,7 +171,8 @@ function load_mailbox(mailbox) {
   });
 }
 
-function createEmailObject(email) {
+
+function createEmailObject(email, sent=false) {
   const e = document.createElement('tr');
   e.classList = "email";
   e.onclick = () => load_email(email)
@@ -183,9 +184,9 @@ function createEmailObject(email) {
     e.style.background = "white"
   }
   
-  // Sender
+  // Sender UNLESS we are displaying the sent box, in which case we want to show who we sent the email to.
   const sender = document.createElement('td');
-  sender.innerHTML = `<h5>${email.sender}</h5>`;
+  sender.innerHTML = sent===false ? `<h5>${email.sender}</h5>`: `<h5>To: ${email.recipients}</h5>`;
   e.appendChild(sender)
 
   // Subject
